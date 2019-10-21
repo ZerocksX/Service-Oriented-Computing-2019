@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from lab1.views import user
+from lab1.views import photo
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('users/', user.user_listing, name='user-list'),
+    path('users/<int:user_id>/', user.user_details, name='user-details'),
+    path('users/<int:user_id>/photos/', photo.photo_listing, name='photo-list'),
+    path('users/<int:user_id>/photos/<int:photo_id>/', photo.photo_details, name='photo-details')
 ]

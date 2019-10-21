@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<h1>All Users</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <th><a href="{{ user.id }}/">{{ user.id }}</a></th>
+            <th>{{ user.username }}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

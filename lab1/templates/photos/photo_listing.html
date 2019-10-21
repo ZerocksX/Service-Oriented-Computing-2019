@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photos</title>
+</head>
+<body>
+<h1>All photos</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for photo in photos %}
+        <tr>
+            <th><a href="{{ photo.id }}/">{{ photo.id }}</a></th>
+            <th>{{ photo.title }}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
