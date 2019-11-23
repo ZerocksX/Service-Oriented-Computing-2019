@@ -8,3 +8,7 @@ class Photo(models.Model):
     id = models.AutoField(primary_key=True)
     image = models.TextField()
     title = models.CharField(max_length=100)
+
+    @property
+    def get_url(self):
+        return "http://127.0.0.1:8000/users/%s/photos/%s" % (self.user_id, self.id)

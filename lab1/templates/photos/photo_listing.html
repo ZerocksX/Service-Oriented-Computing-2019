@@ -16,7 +16,7 @@
     <tbody>
     {% for photo in photos %}
         <tr>
-            <th><a href="{{ photo.id }}/">{{ photo.id }}</a></th>
+            <th><a href="{{ photo.get_url }}">{{ photo.id }}</a></th>
             <th>{{ photo.title }}</th>
         </tr>
     {% endfor %}

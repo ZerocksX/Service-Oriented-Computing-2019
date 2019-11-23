@@ -8,6 +8,6 @@
 Id: {{ user.id }} <br/>
 Username: {{ user.username }} <br/>
 Hashed password: {{ user.password }} <br/>
-<a href="photos/">Photos</a>
+<a href="{{ user.get_url }}/photos">Photos</a>
 </body>
 </html>

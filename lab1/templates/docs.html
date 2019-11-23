@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Super cool api</title>
+</head>
+<body>
+
+<h1>Docs</h1>
+
+<h2>Get</h2>
+/users - All users<br/>
+/users/{id} - User details <br/>
+/users/{id}/photos - All user photos<br/>
+/users/{id}/photos/{id} - Photo details <br/>
+<h2>Post</h2>
+/users - All users<br/>
+{'username':name, 'password': hashed password} <br/>
+/users/{id}/photos - Add photo<br/>
+{'title':title, 'image': base 64 encoded image} <br/>
+<h2>Put</h2>
+/users/{id}/photos/{id} - Update photo <br/>
+{'title':title, 'image': base 64 encoded image} <br/>
+<h2>Delete</h2>
+/users/{id} - Deletes user <br/>
+/users/{id}/photos/{id} - Deletes photo <br/>
+
+</body>
+</html>
