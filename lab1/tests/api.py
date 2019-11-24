@@ -69,4 +69,4 @@ class ApiTests(TestCase):
     def test_delete_photo(self):
         response = self.client.delete(f'http://127.0.0.1/users/{self.user.id}/photos/{self.photo.id}')
         self.assertEqual(response.status_code, 200)
-        self.assertRaises(Photo.DoesNotExist, lambda : Photo.objects.get(id=self.photo.id))
+        self.assertRaises(Photo.DoesNotExist, lambda: Photo.objects.get(id=self.photo.id))
