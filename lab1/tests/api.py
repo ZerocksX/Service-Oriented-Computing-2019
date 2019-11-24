@@ -23,19 +23,26 @@ class ApiTests(TestCase):
         self.photo.image = bus_base64
         self.photo.user = self.user
         self.photo.save()
+        self.client.login(username="name", password="hash")
 
     def tearDown(self):
         self.user.delete()
         self.photo.delete()
+        self.client.logout()
+
+    def test_not_logged_in(self):
+        self.client.logout()
+        response = self.client.get('http://127.0.0.1/users')
+        self.assertEqual(response.status_code, 403)
 
     def test_create_user(self):
-        response = self.client.post('http://127.0.0.1/users', {"username": "name", "password": "hash"},
+        response = self.client.post('http://127.0.0.1/users', {"username": "name 2", "password": "hash"},
                                     content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertIsNotNone(response['location'])
         user_id = int(response['location'].split('/')[-1])
         user = User.objects.get(id=user_id)
-        self.assertEqual(user.username, "name")
+        self.assertEqual(user.username, "name 2")
         self.assertEqual(user.password, "hash")
 
     def test_update_photo(self):

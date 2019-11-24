@@ -59,6 +59,6 @@ def photos_collection(request, user_id):
             return HttpResponse(form, status=400)
     elif request.method == "GET":
         photos = Photo.objects.filter(user_id=user_id)
-        return render(request, 'photos/photo_listing.html', {'photos': photos})
+        return render(request, 'photos/photo_listing.html', {'photos': photos, 'user_id': user_id})
     else:
         return HttpResponse(status=405)
