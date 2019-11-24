@@ -11,6 +11,8 @@ import json
 
 
 def photo_details(request, user_id, photo_id):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
     try:
         photo = Photo.objects.get(id=photo_id, user_id=user_id)
     except Photo.DoesNotExist:
@@ -28,7 +30,7 @@ def photo_details(request, user_id, photo_id):
             if updated_photo.image is not None:
                 photo.image = updated_photo.image
             photo.save()
-            return HttpResponseRedirect(photo.get_url)
+            return HttpResponse(status=200)
         else:
             return HttpResponse(form, status=400)
     elif request.method == "DELETE":
@@ -39,6 +41,8 @@ def photo_details(request, user_id, photo_id):
 
 
 def photos_collection(request, user_id):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
     if request.method == "POST":
         t = QueryDict('', mutable=True)
         t.update(json.loads(request.body.decode("utf-8")))
@@ -47,7 +51,8 @@ def photos_collection(request, user_id):
             photo = form.save(commit=False)
             photo.user = User.objects.get(id=user_id)
             photo.save()
-            response = HttpResponseRedirect(photo.get_url)
+            response = HttpResponse()
+            response['location']=photo.get_url
             response.status_code = 201
             return response
         else:

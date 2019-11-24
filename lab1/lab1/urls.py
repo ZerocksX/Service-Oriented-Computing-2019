@@ -22,6 +22,7 @@ from rest_framework.schemas import get_schema_view
 from lab1.views import user
 from lab1.views import photo
 from lab1.views import home
+from lab1.views import login
 
 urlpatterns = [
     path('admin', admin.site.urls),
@@ -29,5 +30,7 @@ urlpatterns = [
     path('users/<int:user_id>', user.user_details, name='user-details'),
     path('users/<int:user_id>/photos', photo.photos_collection, name='photos'),
     path('users/<int:user_id>/photos/<int:photo_id>', photo.photo_details, name='photo-details'),
-    path('', home.docs)
+    path('', home.docs),
+    path('login', login.login_view),
+    path('logout', login.logout_view),
 ]

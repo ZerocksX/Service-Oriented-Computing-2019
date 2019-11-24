@@ -1,10 +1,13 @@
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=500)
+    username = models.CharField(max_length=50, unique=True)
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['id', 'username']
+    # password = models.CharField(max_length=500)
 
     @property
     def get_url(self):
