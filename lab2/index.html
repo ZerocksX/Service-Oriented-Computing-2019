@@ -1,0 +1,17 @@
+<html>
+<head>
+    <script src="draw.js"></script>
+</head>
+<body style=" background: lightgray;">
+
+<canvas id="canvas" style="background: #fff; margin:20px"></canvas>
+<div id="colorButtons"></div>
+</body>
+
+    <script>
+        console.log("test");
+        let canvasDrawer = new Canvas(600, 800, document.getElementById("canvas"), 25);
+        console.log(canvasDrawer.grid.colorValues);
+        let colorPicker = new ColorPicker(document.getElementById("colorButtons"), canvasDrawer);
+    </script>
+</html>
