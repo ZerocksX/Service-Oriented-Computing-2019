@@ -153,9 +153,10 @@ class ColorPicker {
         let blackRadio: HTMLInputElement = ColorPicker.getRadioButton("black", radioGroup, this.canvas, true);
         let greenRadio: HTMLInputElement = ColorPicker.getRadioButton("green", radioGroup, this.canvas);
         let blueRadio: HTMLInputElement = ColorPicker.getRadioButton("blue", radioGroup, this.canvas);
+        let redRadio: HTMLInputElement = ColorPicker.getRadioButton("red", radioGroup, this.canvas);
         let whiteRadio: HTMLInputElement = ColorPicker.getRadioButton("white", radioGroup, this.canvas);
         let radioForm: HTMLFormElement = document.createElement('form') as HTMLFormElement;
-        [blackRadio, greenRadio, blueRadio, whiteRadio].forEach(btn => {
+        [blackRadio, redRadio, greenRadio, blueRadio, whiteRadio].forEach(btn => {
             radioForm.appendChild(btn);
             radioForm.appendChild(document.createTextNode(btn.value))
         });
