@@ -16,6 +16,32 @@ class Click {
     }
 }
 
+
+class ClickNotification {
+    private _posI: number;
+    private _posJ: number;
+    private _color: string;
+
+    constructor(posI: number, posJ: number, color: string) {
+        this._posI = posI;
+        this._posJ = posJ;
+        this._color = color;
+    }
+
+
+    get posI(): number {
+        return this._posI;
+    }
+
+    get posJ(): number {
+        return this._posJ;
+    }
+
+    get color(): string {
+        return this._color;
+    }
+}
+
 class Grid {
     private _n: number;
     private _m: number;
@@ -29,19 +55,31 @@ class Grid {
         for (let i = 0; i < this.n; i++) {
             this._colorValues[i] = new Array(m);
         }
-        this.setAll(this._defaultColor)
+        this.reset();
+    }
+
+    public reset(){
+        this.setAll(this._defaultColor);
     }
 
     setAll(color: string) {
         for (let i = 0; i < this._n; i++) {
             for (let j = 0; j < this._m; j++) {
-                this._colorValues[i][j] = this._defaultColor
+                this._colorValues[i][j] = this._defaultColor;
             }
         }
     }
 
-    update(boxSize: number, click: Click, color: string = "black") {
-        this._colorValues[Math.floor(click.y / boxSize)][Math.floor(click.x / boxSize)] = color;
+    update(boxSize: number, click: Click, color: string = "black"): ClickNotification {
+        let posI = Math.floor(click.y / boxSize);
+        let posj = Math.floor(click.x / boxSize);
+        let notification = new ClickNotification(posI, posj, color);
+        this.setFromNotification(notification);
+        return notification;
+    }
+
+    setFromNotification(notification: ClickNotification) {
+        this._colorValues[notification.posI][notification.posJ] = notification.color;
     }
 
     get n(): number {
@@ -71,6 +109,7 @@ class Canvas {
     private boxSize: number;
     private grid: Grid;
     private _drawColor: string;
+    private socket?: WebSocket;
 
     constructor(height: number, width: number, canvasElement: HTMLCanvasElement, boxSize: number = 50, drawColor: string = "black") {
         this.height = height;
@@ -89,10 +128,23 @@ class Canvas {
         this._drawColor = drawColor;
         this.canvasElement.width = width;
         this.canvasElement.height = height;
-
         this.redraw();
         this.createUserEvents();
         console.log(this);
+    }
+
+    public createWebSocket(boardId: number) {
+        if (!('WebSocket' in window)) {
+            alert("WebSocket is not supported");
+            return;
+        }
+        if (this.socket) {
+            this.socket.close();
+        }
+        let socket = new WebSocket('ws://localhost:5000/board/' + boardId);
+        this.createSocketEvents(socket);
+        this.socket = socket;
+        this.grid.reset();
     }
 
     private redraw() {
@@ -128,13 +180,41 @@ class Canvas {
         mouseX -= this.canvasElement.offsetLeft;
         mouseY -= this.canvasElement.offsetTop;
 
-        this.grid.update(this.boxSize, new Click(mouseX, mouseY), this._drawColor);
+        let clickNotification = this.grid.update(this.boxSize, new Click(mouseX, mouseY), this._drawColor);
+
+        if (this.socket) {
+            this.socket.send(JSON.stringify(clickNotification))
+        }
+
         this.redraw()
     }
 
 
     set drawColor(value: string) {
         this._drawColor = value;
+    }
+
+    private createSocketEvents(socket: WebSocket) {
+        socket.addEventListener("open", ev => console.log(ev));
+        socket.addEventListener("message", ev => {
+            console.log(ev);
+            this.socketMessageEvent(ev);
+        });
+    }
+
+    private socketMessageEvent(ev: MessageEvent) {
+        let notifications: [{ [id: string]: string | number }] = JSON.parse(ev.data);
+        console.log(notifications);
+        for (let not of notifications) {
+            let notification: ClickNotification;
+            notification = new ClickNotification(
+                not["_posI"] as number,
+                not["_posJ"] as number,
+                not["_color"] as string,
+            );
+            this.grid.setFromNotification(notification);
+        }
+        this.redraw()
     }
 }
 
@@ -176,5 +256,40 @@ class ColorPicker {
             canvas.drawColor = radioBtn.value;
         };
         return radioBtn;
+    }
+}
+
+class BoardPicker {
+    private div: HTMLDivElement;
+    private canvas: Canvas;
+    private textBox: HTMLInputElement;
+    private joinBtn: HTMLButtonElement;
+
+    constructor(div: HTMLDivElement, canvas: Canvas) {
+        this.div = div;
+        this.canvas = canvas;
+        this.textBox = this.createTextBox();
+        this.joinBtn = this.createJoinBtn();
+        this.div.appendChild(this.textBox);
+        this.div.appendChild(this.joinBtn);
+    }
+
+    private createTextBox(): HTMLInputElement {
+        let tb = document.createElement('input') as HTMLInputElement;
+        tb.type = "number";
+        tb.name = "boardName";
+        tb.value = "1";
+        return tb;
+    }
+
+    private createJoinBtn(): HTMLButtonElement {
+        let join = document.createElement('button') as HTMLButtonElement;
+        join.appendChild(document.createTextNode("JOIN"));
+        join.onclick = ev => this.createWebSocket();
+        return join;
+    }
+
+    private createWebSocket() {
+        this.canvas.createWebSocket(Number(this.textBox.value))
     }
 }

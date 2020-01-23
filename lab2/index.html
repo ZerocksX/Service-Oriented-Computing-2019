@@ -1,17 +1,24 @@
 <html>
 <head>
+    <script>
+        if (!('WebSocket' in window)) {
+            alert("WebSocket not supported");
+        }
+    </script>
     <script src="draw.js"></script>
 </head>
 <body style=" background: lightgray;">
-
+<div id="boardPicker"></div>
+<br/>
 <canvas id="canvas" style="background: #fff; margin:20px"></canvas>
 <div id="colorButtons"></div>
+<br/>
 </body>
 
-    <script>
-        console.log("test");
-        let canvasDrawer = new Canvas(600, 800, document.getElementById("canvas"), 25);
-        console.log(canvasDrawer.grid.colorValues);
-        let colorPicker = new ColorPicker(document.getElementById("colorButtons"), canvasDrawer);
-    </script>
+<script>
+    let canvasDrawer = new Canvas(600, 800, document.getElementById("canvas"), 25);
+    console.log(canvasDrawer.grid.colorValues);
+    let colorPicker = new ColorPicker(document.getElementById("colorButtons"), canvasDrawer);
+    let boardPicker = new BoardPicker(document.getElementById("boardPicker"), canvasDrawer);
+</script>
 </html>
